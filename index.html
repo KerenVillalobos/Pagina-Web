@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Noticias sobre la Deforestación en Facatativá</title>
-  <title>Informate Deforest</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -59,19 +58,50 @@
       padding: 15px;
       margin-top: 30px;
     }
-    .contacto {
+    .contacto, .encuesta, .folleto {
       background: #ffffff;
       border-radius: 8px;
       padding: 20px;
       margin-top: 30px;
       box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
     }
-    .contacto h2 {
+    .contacto h2, .encuesta h2, .folleto h2 {
       color: #2e7d32;
     }
     ul {
       list-style-type: square;
       padding-left: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #e8f5e9;
+    }
+    button {
+      background-color: #2e7d32;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #1b5e20;
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -85,18 +115,21 @@
   <nav>
     <a href="#">Inicio</a>
     <a href="#noticias">Noticias</a>
-    <a href="#proyectos">Proyectos</a>
+    <a href="#folleto">Folleto Digital</a>
+    <a href="#encuesta">Encuesta</a>
     <a href="#contacto">Contacto</a>
   </nav>
 
+  <!-- Noticias -->
   <div class="contenedor" id="noticias">
     <article>
       <h2>Avance de la deforestación en los cerros</h2>
       <p><strong>Publicado el 30 de septiembre de 2025</strong></p>
       <p>La comunidad ha denunciado un aumento en la tala ilegal en zonas cercanas a la vereda Los Manzanos...</p>
-    <div style="display: flex; gap: 10px;">
-      <img src="Los-Manzanos.jpg" alt="vereda Los Manzanos" width="300">
-      <img src="vereda.jpeg" alt="vereda Los Manzanos" width="300">
+      <div style="display: flex; gap: 10px;">
+        <img src="Los Manzanos.jpg" alt="vereda Los Manzanos" width="300">
+        <img src="vereda.jpeg" alt="vereda Los Manzanos" width="300">
+      </div>
     </article>
 
     <article>
@@ -104,11 +137,60 @@
       <p><strong>Publicado el 25 de septiembre de 2025</strong></p>
       <p>Voluntarios y estudiantes participaron en una jornada de siembra de 500 árboles nativos...</p>
       <div style="display: flex; gap: 10px;">
-    <img src="Siembra.jpg" alt="Jornada de Siembra" width="300">
-     <img src="Siembra-Faca.jpeg" alt="Jornada de Siembra" width="300">
+        <img src="Siembra.jpg" alt="Jornada de Siembra" width="300">
+        <img src="Siembra Faca.jpeg" alt="Jornada de Siembra" width="300">
+      </div>
     </article>
   </div>
 
+  <!-- Folleto Digital -->
+  <div class="contenedor folleto" id="folleto">
+    <h2>📖 Folleto Digital Ambiental</h2>
+    <p>Consulta el folleto informativo sobre la protección ambiental y los proyectos de reforestación:</p>
+    <iframe src="folleto.pdf"></iframe>
+  </div>
+
+  <!-- Encuesta -->
+  <div class="contenedor encuesta" id="encuesta">
+    <h2>🗳️ Encuesta: ¿Qué opinas sobre la deforestación en Facatativá?</h2>
+    <p>Queremos conocer tu percepción. Completa esta breve encuesta:</p>
+
+    <form id="formEncuesta">
+      <label>1️⃣ ¿Consideras que la deforestación es un problema grave?</label><br>
+      <select id="pregunta1" required>
+        <option value="">Selecciona una opción</option>
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
+        <option value="No estoy seguro">No estoy seguro</option>
+      </select><br><br>
+
+      <label>2️⃣ ¿Participarías en actividades de reforestación?</label><br>
+      <select id="pregunta2" required>
+        <option value="">Selecciona una opción</option>
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
+        <option value="Tal vez">Tal vez</option>
+      </select><br><br>
+
+      <button type="submit">Enviar Respuesta</button>
+    </form>
+
+    <h3>📊 Resultados en tiempo real</h3>
+    <table id="tablaResultados">
+      <thead>
+        <tr>
+          <th>Pregunta</th>
+          <th>Respuesta</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Los datos se agregan dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Contacto -->
   <div class="contenedor contacto" id="contacto">
     <h2>Contacto y Entidades Ambientales en Facatativá</h2>
     <p>Si deseas más información o unirte a actividades de protección ambiental, puedes contactar con las siguientes entidades:</p>
@@ -123,8 +205,45 @@
   <footer>
     <p>&copy; 2025 Noticias Ambientales Facatativá | Creado con ❤️ por Keren Villalobos</p>
   </footer>
+
+  <script>
+    // Script de encuesta con almacenamiento local
+    const form = document.getElementById('formEncuesta');
+    const tabla = document.getElementById('tablaResultados').querySelector('tbody');
+
+    let resultados = JSON.parse(localStorage.getItem('resultadosEncuesta')) || {};
+
+    function actualizarTabla() {
+      tabla.innerHTML = '';
+      for (const [pregunta, respuestas] of Object.entries(resultados)) {
+        for (const [respuesta, cantidad] of Object.entries(respuestas)) {
+          const fila = document.createElement('tr');
+          fila.innerHTML = `<td>${pregunta}</td><td>${respuesta}</td><td>${cantidad}</td>`;
+          tabla.appendChild(fila);
+        }
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const p1 = document.getElementById('pregunta1').value;
+      const p2 = document.getElementById('pregunta2').value;
+
+      resultados['Deforestación grave'] = resultados['Deforestación grave'] || {};
+      resultados['Deforestación grave'][p1] = (resultados['Deforestación grave'][p1] || 0) + 1;
+
+      resultados['Participaría en reforestación'] = resultados['Participaría en reforestación'] || {};
+      resultados['Participaría en reforestación'][p2] = (resultados['Participaría en reforestación'][p2] || 0) + 1;
+
+      localStorage.setItem('resultadosEncuesta', JSON.stringify(resultados));
+
+      actualizarTabla();
+      form.reset();
+      alert('¡Gracias por participar en la encuesta!');
+    });
+
+    actualizarTabla();
+  </script>
 </body>
-
 </html>
-
 
