@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estadísticas - Noticias Ambientales Facatativá</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f9f4;
+      margin: 0;
+    }
+    header {
+      background-color: #2e7d32;
+      color: white;
+      text-align: center;
+      padding: 15px;
+    }
+    nav {
+      background: #1b5e20;
+      padding: 10px;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+    .contenedor {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    }
+    canvas {
+      width: 100%;
+      max-height: 400px;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Estadísticas y Resultados</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="estadisticas.html">Estadísticas</a>
+  </nav>
+
+  <div class="contenedor">
+    <h2>Visitas por página</h2>
+    <canvas id="graficoVisitas"></canvas>
+
+    <h2>Interés en noticias</h2>
+    <canvas id="graficoNoticias"></canvas>
+
+    <h2>Encuesta ambiental</h2>
+    <canvas id="graficoEncuesta"></canvas>
+  </div>
+
+  <script>
+    // Simulación de datos (puedes conectar esto a un backend más adelante)
+    const visitas = {
+      'Inicio': localStorage.getItem('visitas_index') || 0,
+      'Noticia 1': localStorage.getItem('visitas_noticia1') || 0,
+      'Noticia 2': localStorage.getItem('visitas_noticia2') || 0
+    };
+
+    const interesNoticias = {
+      'Noticia 1': localStorage.getItem('interes_noticia1') || 3,
+      'Noticia 2': localStorage.getItem('interes_noticia2') || 2
+    };
+
+    const encuesta = {
+      'Deforestación grave (Sí)': 1,
+      'Participaría en reforestación (No)': 1
+    };
+
+    // Gráfico de visitas
+    new Chart(document.getElementById('graficoVisitas'), {
+      type: 'bar',
+      data: {
+        labels: Object.keys(visitas),
+        datasets: [{
+          label: 'Visitas registradas',
+          data: Object.values(visitas),
+          backgroundColor: ['#81c784', '#4caf50', '#2e7d32']
+        }]
+      }
+    });
+
+    // Gráfico de interés
+    new Chart(document.getElementById('graficoNoticias'), {
+      type: 'pie',
+      data: {
+        labels: Object.keys(interesNoticias),
+        datasets: [{
+          data: Object.values(interesNoticias),
+          backgroundColor: ['#66bb6a', '#43a047']
+        }]
+      }
+    });
+
+    // Gráfico de encuesta
+    new Chart(document.getElementById('graficoEncuesta'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(encuesta),
+        datasets: [{
+          data: Object.values(encuesta),
+          backgroundColor: ['#81c784', '#a5d6a7']
+        }]
+      }
+    });
+  </script>
+</body>
+</html>
