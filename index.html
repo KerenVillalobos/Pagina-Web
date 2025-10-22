@@ -80,18 +80,16 @@
       margin-top: 30px;
       box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
+    button {
+      background-color: #2e7d32;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #e8f5e9;
+    button:hover {
+      background-color: #1b5e20;
     }
   </style>
 </head>
@@ -114,7 +112,7 @@
       <p>La comunidad ha denunciado un aumento en la tala ilegal en zonas cercanas a la vereda Los Manzanos...</p>
       <img src="Los-Manzanos.jpg" alt="Vereda Los Manzanos" width="300">
       <img src="Vereda.jpeg" alt="Vereda Los Manzanos" width="300">
-      <a href="noticia1.html" class="ver-mas">Leer noticia completa</a>
+      <a href="noticia1.html" class="ver-mas" onclick="registrarVisita('noticia1')">Leer noticia completa</a>
     </article>
 
     <article>
@@ -123,13 +121,16 @@
       <p>Voluntarios y estudiantes participaron en una jornada de siembra de 500 árboles nativos...</p>
       <img src="Siembra.jpg" alt="Jornada de Siembra" width="300">
       <img src="Siembra-FACA.jpeg" alt="Jornada de Siembra" width="300">
-      <a href="noticia2.html" class="ver-mas">Leer noticia completa</a>
+      <a href="noticia2.html" class="ver-mas" onclick="registrarVisita('noticia2')">Leer noticia completa</a>
     </article>
   </div>
 
   <div class="contenedor folleto" id="folleto">
     <h2>📘 Folleto Digital Ambiental</h2>
-    <iframe src="folleto.pdf"></iframe>
+    <iframe src="folleto.pdf" onclick="registrarVisita('folleto')"></iframe>
+    <p style="text-align:center; margin-top:10px;">
+      <a href="https://forms.gle/TuFormularioDeGoogle" target="_blank" class="ver-mas">¿Qué te pareció el folleto?</a>
+    </p>
   </div>
 
   <div class="contenedor encuesta" id="encuesta">
@@ -154,26 +155,40 @@
 
       <button type="submit">Enviar</button>
     </form>
-
-    
+  </div>
 
   <footer>
     <p>&copy; 2025 Noticias Ambientales Facatativá | Keren Villalobos y Danna Lopez</p>
   </footer>
 
-    <script>
-  const page = window.location.pathname.split("/").pop().replace(".html", "");
-  const key = "visitas_" + (page || "index");
-  const visitas = parseInt(localStorage.getItem(key) || "0") + 1;
-  localStorage.setItem(key, visitas);
-</script>
-    
+  <script>
+    // Registra visita por página o elemento
+    function registrarVisita(tipo) {
+      const data = JSON.parse(localStorage.getItem("estadisticas")) || {};
+      data[tipo] = (data[tipo] || 0) + 1;
+      localStorage.setItem("estadisticas", JSON.stringify(data));
+    }
+
+    // Contador general de visitas por página
+    const page = window.location.pathname.split("/").pop().replace(".html", "");
+    const key = "visitas_" + (page || "index");
+    const visitas = parseInt(localStorage.getItem(key) || "0") + 1;
+    localStorage.setItem(key, visitas);
+
+    // Guardar respuestas de encuesta
+    const form = document.getElementById("formEncuesta");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const p1 = document.getElementById("pregunta1").value;
+      const p2 = document.getElementById("pregunta2").value;
+
+      const respuestas = JSON.parse(localStorage.getItem("respuestasEncuesta")) || [];
+      respuestas.push({ p1, p2, fecha: new Date().toLocaleString() });
+      localStorage.setItem("respuestasEncuesta", JSON.stringify(respuestas));
+
+      alert("✅ ¡Gracias por participar en la encuesta!");
+      form.reset();
+    });
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
