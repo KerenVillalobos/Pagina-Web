@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Folleto Digital - Página Interactiva</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f7f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .encuesta {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+    }
+
+    .encuesta h3 {
+      color: #333;
+    }
+
+    .encuesta a {
+      display: inline-block;
+      background-color: #28a745;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .encuesta a:hover {
+      background-color: #218838;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Folleto Digital Interactivo</h1>
+  </header>
+
+  <main>
+    <h2 style="text-align:center;">Explora nuestro folleto</h2>
+    <p style="text-align:center;">Visualiza el folleto completo directamente desde aquí:</p>
+
+    <!-- 📘 Folleto en PDF -->
+    <iframe src="folleto.pdf" title="Folleto Digital"></iframe>
+
+    <!-- 📋 Sección de encuesta -->
+    <div class="encuesta">
+      <h3>¿Qué te pareció el folleto?</h3>
+      <p>Tu opinión nos ayuda a mejorar. ¡Responde esta breve encuesta!</p>
+      <a id="btnEncuesta" href="https://forms.gle/abcd1234efgh5678" target="_blank">📋 Responder encuesta</a>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Noticias Ambientales Facatativá | Creado con ❤️ por Keren Villalobos
+  </footer>
+
+  <script>
+    // --- Contador local de visitas al folleto ---
+    document.addEventListener("DOMContentLoaded", () => {
+      let data = JSON.parse(localStorage.getItem("estadisticas")) || {};
+
+      // Contar visitas al folleto
+      data.folleto = (data.folleto || 0) + 1;
+
+      localStorage.setItem("estadisticas", JSON.stringify(data));
+    });
+
+    // --- Contador de clics en el botón de encuesta ---
+    document.getElementById("btnEncuesta").addEventListener("click", () => {
+      let data = JSON.parse(localStorage.getItem("estadisticas")) || {};
+      data.encuestaFolleto = (data.encuestaFolleto || 0) + 1;
+      localStorage.setItem("estadisticas", JSON.stringify(data));
+    });
+  </script>
+
+</body>
+</html>
