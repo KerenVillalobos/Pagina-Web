@@ -155,60 +155,15 @@
       <button type="submit">Enviar</button>
     </form>
 
-    <h3>📊 Resultados</h3>
-    <table id="tablaResultados">
-      <thead>
-        <tr>
-          <th>Pregunta</th>
-          <th>Respuesta</th>
-          <th>Cantidad</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+    
 
   <footer>
     <p>&copy; 2025 Noticias Ambientales Facatativá | Keren Villalobos</p>
   </footer>
 
-  <script>
-    const form = document.getElementById('formEncuesta');
-    const tabla = document.querySelector('#tablaResultados tbody');
-    let resultados = JSON.parse(localStorage.getItem('resultadosEncuesta')) || {};
-
-    function actualizarTabla() {
-      tabla.innerHTML = '';
-      for (const [pregunta, respuestas] of Object.entries(resultados)) {
-        for (const [resp, cantidad] of Object.entries(respuestas)) {
-          const fila = document.createElement('tr');
-          fila.innerHTML = `<td>${pregunta}</td><td>${resp}</td><td>${cantidad}</td>`;
-          tabla.appendChild(fila);
-        }
-      }
-    }
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const p1 = document.getElementById('pregunta1').value;
-      const p2 = document.getElementById('pregunta2').value;
-
-      resultados['Deforestación grave'] = resultados['Deforestación grave'] || {};
-      resultados['Deforestación grave'][p1] = (resultados['Deforestación grave'][p1] || 0) + 1;
-
-      resultados['Participaría en reforestación'] = resultados['Participaría en reforestación'] || {};
-      resultados['Participaría en reforestación'][p2] = (resultados['Participaría en reforestación'][p2] || 0) + 1;
-
-      localStorage.setItem('resultadosEncuesta', JSON.stringify(resultados));
-      actualizarTabla();
-      form.reset();
-      alert('¡Gracias por participar!');
-    });
-
-    actualizarTabla();
-  </script>
 </body>
 </html>
+
 
 
 
