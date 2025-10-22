@@ -3,121 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estadísticas - Noticias Ambientales Facatativá</title>
+  <title>Estadísticas del Sitio</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f9f4;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
       margin: 0;
+      padding: 0;
     }
+
     header {
       background-color: #2e7d32;
       color: white;
       text-align: center;
-      padding: 15px;
+      padding: 20px;
     }
-    nav {
-      background: #1b5e20;
+
+    h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    }
+
+    canvas {
+      margin: 40px auto;
+      display: block;
+      max-width: 700px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
       padding: 10px;
       text-align: center;
     }
-    nav a {
+
+    th {
+      background-color: #4CAF50;
       color: white;
-      text-decoration: none;
-      margin: 0 10px;
-      font-weight: bold;
     }
-    .contenedor {
-      max-width: 900px;
-      margin: 30px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-    }
-    canvas {
-      width: 100%;
-      max-height: 400px;
-      margin-bottom: 40px;
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 10px;
+      background-color: #2e7d32;
+      color: white;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>Estadísticas y Resultados</h1>
+    <h1>📊 Estadísticas de Interacción</h1>
+    <p>Visitas, lecturas y encuestas registradas localmente</p>
   </header>
 
-  <nav>
-    <a href="index.html">Inicio</a>
-    <a href="estadisticas.html">Estadísticas</a>
-  </nav>
+  <main>
+    <h2 style="text-align:center;">Resumen General</h2>
+    <canvas id="graficaGeneral"></canvas>
 
-  <div class="contenedor">
-    <h2>Visitas por página</h2>
-    <canvas id="graficoVisitas"></canvas>
+    <h2 style="text-align:center;">Datos en Detalle</h2>
+    <table id="tablaDatos">
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>Interacciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Los datos se llenan con JavaScript -->
+      </tbody>
+    </table>
+  </main>
 
-    <h2>Interés en noticias</h2>
-    <canvas id="graficoNoticias"></canvas>
-
-    <h2>Encuesta ambiental</h2>
-    <canvas id="graficoEncuesta"></canvas>
-  </div>
+  <footer>
+    &copy; 2025 Noticias Ambientales Facatativá | Estadísticas interactivas 🌿
+  </footer>
 
   <script>
-    // Simulación de datos (puedes conectar esto a un backend más adelante)
-    const visitas = {
-      'Inicio': localStorage.getItem('visitas_index') || 0,
-      'Noticia 1': localStorage.getItem('visitas_noticia1') || 0,
-      'Noticia 2': localStorage.getItem('visitas_noticia2') || 0
+    // --- Cargar estadísticas desde localStorage ---
+    const data = JSON.parse(localStorage.getItem("estadisticas")) || {};
+
+    // --- Asegurar que existan los campos ---
+    const stats = {
+      noticia1: data.noticia1 || 0,
+      noticia2: data.noticia2 || 0,
+      folleto: data.folleto || 0,
+      encuestaFolleto: data.encuestaFolleto || 0
     };
 
-    const interesNoticias = {
-      'Noticia 1': localStorage.getItem('interes_noticia1') || 3,
-      'Noticia 2': localStorage.getItem('interes_noticia2') || 2
-    };
+    // --- Llenar tabla ---
+    const tbody = document.querySelector("#tablaDatos tbody");
+    Object.entries(stats).forEach(([clave, valor]) => {
+      const fila = document.createElement("tr");
+      const nombre = {
+        noticia1: "Visitas a Noticia 1",
+        noticia2: "Visitas a Noticia 2",
+        folleto: "Visitas al Folleto Digital",
+        encuestaFolleto: "Encuestas del Folleto"
+      }[clave] || clave;
 
-    const encuesta = {
-      'Deforestación grave (Sí)': 1,
-      'Participaría en reforestación (No)': 1
-    };
+      fila.innerHTML = `<td>${nombre}</td><td>${valor}</td>`;
+      tbody.appendChild(fila);
+    });
 
-    // Gráfico de visitas
-    new Chart(document.getElementById('graficoVisitas'), {
+    // --- Crear gráfico ---
+    const ctx = document.getElementById("graficaGeneral").getContext("2d");
+    new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: Object.keys(visitas),
+        labels: ["Noticia 1", "Noticia 2", "Folleto", "Encuestas Folleto"],
         datasets: [{
-          label: 'Visitas registradas',
-          data: Object.values(visitas),
-          backgroundColor: ['#81c784', '#4caf50', '#2e7d32']
+          label: 'Número de Interacciones',
+          data: [stats.noticia1, stats.noticia2, stats.folleto, stats.encuestaFolleto],
+          backgroundColor: [
+            'rgba(46, 125, 50, 0.6)',
+            'rgba(76, 175, 80, 0.6)',
+            'rgba(139, 195, 74, 0.6)',
+            'rgba(205, 220, 57, 0.6)'
+          ],
+          borderColor: [
+            'rgba(46, 125, 50, 1)',
+            'rgba(76, 175, 80, 1)',
+            'rgba(139, 195, 74, 1)',
+            'rgba(205, 220, 57, 1)'
+          ],
+          borderWidth: 2
         }]
-      }
-    });
-
-    // Gráfico de interés
-    new Chart(document.getElementById('graficoNoticias'), {
-      type: 'pie',
-      data: {
-        labels: Object.keys(interesNoticias),
-        datasets: [{
-          data: Object.values(interesNoticias),
-          backgroundColor: ['#66bb6a', '#43a047']
-        }]
-      }
-    });
-
-    // Gráfico de encuesta
-    new Chart(document.getElementById('graficoEncuesta'), {
-      type: 'doughnut',
-      data: {
-        labels: Object.keys(encuesta),
-        datasets: [{
-          data: Object.values(encuesta),
-          backgroundColor: ['#81c784', '#a5d6a7']
-        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: "Cantidad de Interacciones" }
+          }
+        },
+        plugins: {
+          legend: { display: true, position: 'bottom' }
+        }
       }
     });
   </script>
+
 </body>
 </html>
