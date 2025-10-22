@@ -161,8 +161,15 @@
     <p>&copy; 2025 Noticias Ambientales Facatativá | Keren Villalobos</p>
   </footer>
 
+    <script>
+  const page = window.location.pathname.split("/").pop().replace(".html", "");
+  const key = "visitas_" + (page || "index");
+  const visitas = parseInt(localStorage.getItem(key) || "0") + 1;
+  localStorage.setItem(key, visitas);
+</script>
 </body>
 </html>
+
 
 
 
