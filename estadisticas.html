@@ -70,7 +70,7 @@
 
   <header>
     <h1>📊 Estadísticas de Interacción</h1>
-    <p>Visitas, lecturas y encuestas registradas localmente</p>
+    <p>Visitas y lecturas registradas localmente</p>
   </header>
 
   <main>
@@ -82,7 +82,7 @@
       <thead>
         <tr>
           <th>Elemento</th>
-          <th>Interacciones</th>
+          <th>Visitas</th>
         </tr>
       </thead>
       <tbody>
@@ -103,8 +103,7 @@
     const stats = {
       noticia1: data.noticia1 || 0,
       noticia2: data.noticia2 || 0,
-      folleto: data.folleto || 0,
-      encuestaFolleto: data.encuestaFolleto || 0
+      folleto: data.folleto || 0
     };
 
     // --- Llenar tabla ---
@@ -114,8 +113,7 @@
       const nombre = {
         noticia1: "Visitas a Noticia 1",
         noticia2: "Visitas a Noticia 2",
-        folleto: "Visitas al Folleto Digital",
-        encuestaFolleto: "Encuestas del Folleto"
+        folleto: "Visitas al Folleto Digital"
       }[clave] || clave;
 
       fila.innerHTML = `<td>${nombre}</td><td>${valor}</td>`;
@@ -127,21 +125,19 @@
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ["Noticia 1", "Noticia 2", "Folleto", "Encuestas Folleto"],
+        labels: ["Noticia 1", "Noticia 2", "Folleto"],
         datasets: [{
-          label: 'Número de Interacciones',
-          data: [stats.noticia1, stats.noticia2, stats.folleto, stats.encuestaFolleto],
+          label: 'Número de Visitas',
+          data: [stats.noticia1, stats.noticia2, stats.folleto],
           backgroundColor: [
             'rgba(46, 125, 50, 0.6)',
             'rgba(76, 175, 80, 0.6)',
-            'rgba(139, 195, 74, 0.6)',
-            'rgba(205, 220, 57, 0.6)'
+            'rgba(139, 195, 74, 0.6)'
           ],
           borderColor: [
             'rgba(46, 125, 50, 1)',
             'rgba(76, 175, 80, 1)',
-            'rgba(139, 195, 74, 1)',
-            'rgba(205, 220, 57, 1)'
+            'rgba(139, 195, 74, 1)'
           ],
           borderWidth: 2
         }]
@@ -151,7 +147,7 @@
         scales: {
           y: {
             beginAtZero: true,
-            title: { display: true, text: "Cantidad de Interacciones" }
+            title: { display: true, text: "Cantidad de Visitas" }
           }
         },
         plugins: {
