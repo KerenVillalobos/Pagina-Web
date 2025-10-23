@@ -126,11 +126,11 @@
   <footer>
     <p>&copy; 2025 Noticias Ambientales Facatativá | Creado por Keren Villalobos</p>
   </footer>
-  <script>
-  const page = window.location.pathname.split("/").pop().replace(".html", "");
-  const key = "visitas_" + (page || "index");
-  const visitas = parseInt(localStorage.getItem(key) || "0") + 1;
-  localStorage.setItem(key, visitas);
+<script>
+let data = JSON.parse(localStorage.getItem("estadisticas")) || {};
+data.noticia2 = (data.noticia2 || 0) + 1;
+localStorage.setItem("estadisticas", JSON.stringify(data));
 </script>
+
 </body>
 </html>
