@@ -7,90 +7,128 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f3f3f3;
+      background-color: #f4f9f4;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background-color: #2e7d32;
+      color: white;
+      text-align: center;
       padding: 20px;
     }
-    h1 {
-      color: #333;
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1b5e20;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 15px;
     }
     th, td {
+      border: 1px solid #ccc;
       padding: 10px;
-      border-bottom: 1px solid #ddd;
       text-align: center;
     }
     th {
-      background-color: #2196f3;
+      background-color: #e8f5e9;
+    }
+    .volver {
+      display: block;
+      margin: 20px auto;
+      width: fit-content;
+      background-color: #2e7d32;
       color: white;
-    }
-    tr:hover {
-      background-color: #f1f1f1;
-    }
-    button {
-      margin-top: 20px;
       padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #f44336;
-      color: white;
-      cursor: pointer;
+      border-radius: 6px;
+      text-decoration: none;
+      text-align: center;
     }
-    button:hover {
-      background-color: #d32f2f;
+    .volver:hover {
+      background-color: #1b5e20;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>📊 Estadísticas del Sitio</h1>
+    <p>Consulta las visitas y respuestas de la encuesta</p>
+  </header>
 
-  <h1>📊 Estadísticas de visitas y encuesta</h1>
-
-  <table>
-    <thead>
+  <main>
+    <h2>👀 Visitas a las Noticias</h2>
+    <table id="tablaVisitas">
       <tr>
-        <th>Elemento</th>
-        <th>Interacciones</th>
+        <th>Página</th>
+        <th>Visitas registradas</th>
       </tr>
-    </thead>
-    <tbody id="tablaDatos"></tbody>
-  </table>
+    </table>
 
-  <button onclick="borrarDatos()">Borrar todo</button>
+    <h2>🗳️ Resultados de la Encuesta</h2>
+    <table id="tablaEncuesta">
+      <tr>
+        <th>Fecha</th>
+        <th>¿Es un problema grave?</th>
+        <th>¿Participarías en reforestación?</th>
+      </tr>
+    </table>
+
+    <h3 id="resumenEncuesta"></h3>
+
+    <a href="index.html" class="volver">⬅ Volver al inicio</a>
+  </main>
 
   <script>
+    // === Mostrar visitas guardadas ===
     const data = JSON.parse(localStorage.getItem("estadisticas")) || {};
-    const cuerpoTabla = document.getElementById("tablaDatos");
+    const tablaVisitas = document.getElementById("tablaVisitas");
 
-    const mostrar = {
-      noticia1: "Visitas a Noticia 1",
-      noticia2: "Visitas a Noticia 2",
-      encuesta: "Respuestas de Encuesta"
-    };
-
-    Object.keys(mostrar).forEach(clave => {
-      const fila = document.createElement("tr");
-      fila.innerHTML = `
-        <td>${mostrar[clave]}</td>
-        <td>${data[clave] || 0}</td>
-      `;
-      cuerpoTabla.appendChild(fila);
-    });
-
-    function borrarDatos() {
-      if (confirm("¿Seguro que deseas borrar todas las estadísticas?")) {
-        localStorage.removeItem("estadisticas");
-        localStorage.removeItem("respuestasEncuesta");
-        location.reload();
+    if (Object.keys(data).length === 0) {
+      const fila = tablaVisitas.insertRow();
+      fila.innerHTML = "<td colspan='2'>Aún no hay visitas registradas.</td>";
+    } else {
+      for (const [pagina, visitas] of Object.entries(data)) {
+        const fila = tablaVisitas.insertRow();
+        const nombre = pagina === "noticia1" ? "Noticia 1: Deforestación en los cerros"
+                      : pagina === "noticia2" ? "Noticia 2: Reforestación en La Herrera"
+                      : pagina;
+        fila.innerHTML = `<td>${nombre}</td><td>${visitas}</td>`;
       }
     }
-  </script>
 
+    // === Mostrar respuestas de encuesta ===
+    const respuestas = JSON.parse(localStorage.getItem("respuestasEncuesta")) || [];
+    const tablaEncuesta = document.getElementById("tablaEncuesta");
+
+    if (respuestas.length === 0) {
+      const fila = tablaEncuesta.insertRow();
+      fila.innerHTML = "<td colspan='3'>Aún no hay respuestas.</td>";
+    } else {
+      respuestas.forEach(r => {
+        const fila = tablaEncuesta.insertRow();
+        fila.innerHTML = `<td>${r.fecha}</td><td>${r.p1}</td><td>${r.p2}</td>`;
+      });
+    }
+
+    // === Resumen general ===
+    const resumen = document.getElementById("resumenEncuesta");
+    if (respuestas.length > 0) {
+      const total = respuestas.length;
+      const si = respuestas.filter(r => r.p1 === "Sí").length;
+      const no = respuestas.filter(r => r.p1 === "No").length;
+      const talVez = respuestas.filter(r => r.p1 === "No estoy seguro").length;
+
+      resumen.textContent = `📈 Total de respuestas: ${total} | Sí: ${si}, No: ${no}, No estoy seguro: ${talVez}`;
+    }
+  </script>
 </body>
 </html>
