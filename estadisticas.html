@@ -4,157 +4,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Estadísticas del Sitio</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7f6;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background-color: #2e7d32;
-      color: white;
-      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #f3f3f3;
       padding: 20px;
     }
-
     h1 {
-      margin: 0;
-      font-size: 2em;
+      color: #333;
     }
-
-    main {
-      max-width: 900px;
-      margin: 40px auto;
-      background-color: white;
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
-    }
-
-    canvas {
-      margin: 40px auto;
-      display: block;
-      max-width: 700px;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 30px;
+      margin-top: 20px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
     th, td {
-      border: 1px solid #ccc;
       padding: 10px;
+      border-bottom: 1px solid #ddd;
       text-align: center;
     }
-
     th {
-      background-color: #4CAF50;
+      background-color: #2196f3;
       color: white;
     }
-
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      padding: 10px;
-      background-color: #2e7d32;
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f44336;
       color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #d32f2f;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>📊 Estadísticas de Interacción</h1>
-    <p>Visitas y lecturas registradas localmente</p>
-  </header>
+  <h1>📊 Estadísticas de visitas y encuesta</h1>
 
-  <main>
-    <h2 style="text-align:center;">Resumen General</h2>
-    <canvas id="graficaGeneral"></canvas>
+  <table>
+    <thead>
+      <tr>
+        <th>Elemento</th>
+        <th>Interacciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaDatos"></tbody>
+  </table>
 
-    <h2 style="text-align:center;">Datos en Detalle</h2>
-    <table id="tablaDatos">
-      <thead>
-        <tr>
-          <th>Elemento</th>
-          <th>Visitas</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Los datos se llenan con JavaScript -->
-      </tbody>
-    </table>
-  </main>
-
-  <footer>
-    &copy; 2025 Noticias Ambientales Facatativá | Estadísticas interactivas 🌿
-  </footer>
+  <button onclick="borrarDatos()">Borrar todo</button>
 
   <script>
-    // --- Cargar estadísticas desde localStorage ---
     const data = JSON.parse(localStorage.getItem("estadisticas")) || {};
+    const cuerpoTabla = document.getElementById("tablaDatos");
 
-    // --- Asegurar que existan los campos ---
-    const stats = {
-      noticia1: data.noticia1 || 0,
-      noticia2: data.noticia2 || 0,
-      folleto: data.folleto || 0
+    const mostrar = {
+      noticia1: "Visitas a Noticia 1",
+      noticia2: "Visitas a Noticia 2",
+      encuesta: "Respuestas de Encuesta"
     };
 
-    // --- Llenar tabla ---
-    const tbody = document.querySelector("#tablaDatos tbody");
-    Object.entries(stats).forEach(([clave, valor]) => {
+    Object.keys(mostrar).forEach(clave => {
       const fila = document.createElement("tr");
-      const nombre = {
-        noticia1: "Visitas a Noticia 1",
-        noticia2: "Visitas a Noticia 2",
-        folleto: "Visitas al Folleto Digital"
-      }[clave] || clave;
-
-      fila.innerHTML = `<td>${nombre}</td><td>${valor}</td>`;
-      tbody.appendChild(fila);
+      fila.innerHTML = `
+        <td>${mostrar[clave]}</td>
+        <td>${data[clave] || 0}</td>
+      `;
+      cuerpoTabla.appendChild(fila);
     });
 
-    // --- Crear gráfico ---
-    const ctx = document.getElementById("graficaGeneral").getContext("2d");
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ["Noticia 1", "Noticia 2", "Folleto"],
-        datasets: [{
-          label: 'Número de Visitas',
-          data: [stats.noticia1, stats.noticia2, stats.folleto],
-          backgroundColor: [
-            'rgba(46, 125, 50, 0.6)',
-            'rgba(76, 175, 80, 0.6)',
-            'rgba(139, 195, 74, 0.6)'
-          ],
-          borderColor: [
-            'rgba(46, 125, 50, 1)',
-            'rgba(76, 175, 80, 1)',
-            'rgba(139, 195, 74, 1)'
-          ],
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: "Cantidad de Visitas" }
-          }
-        },
-        plugins: {
-          legend: { display: true, position: 'bottom' }
-        }
+    function borrarDatos() {
+      if (confirm("¿Seguro que deseas borrar todas las estadísticas?")) {
+        localStorage.removeItem("estadisticas");
+        localStorage.removeItem("respuestasEncuesta");
+        location.reload();
       }
-    });
+    }
   </script>
 
 </body>
