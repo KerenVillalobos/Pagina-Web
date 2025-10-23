@@ -125,11 +125,12 @@
   </footer>
 
   <script>
-  const page = window.location.pathname.split("/").pop().replace(".html", "");
-  const key = "visitas_" + (page || "index");
-  const visitas = parseInt(localStorage.getItem(key) || "0") + 1;
-  localStorage.setItem(key, visitas);
+let data = JSON.parse(localStorage.getItem("estadisticas")) || {};
+data.noticia1 = (data.noticia1 || 0) + 1;
+localStorage.setItem("estadisticas", JSON.stringify(data));
 </script>
+
+
 
 </body>
 </html>
